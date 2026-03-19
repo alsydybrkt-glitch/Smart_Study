@@ -1,65 +1,78 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
+import { useI18n } from "@/hooks/useI18n";
 
 export default function Home() {
+  const router = useRouter();
+  const { loginAsDemo, user } = useAuth();
+  const { messages } = useI18n();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="relative mx-auto flex min-h-[calc(100vh-3rem)] max-w-6xl items-center px-3 py-6 sm:px-4 md:px-6">
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.12),transparent_38%),radial-gradient(circle_at_top_right,rgba(34,197,94,0.10),transparent_32%)]" />
+
+      <section className="grid w-full overflow-hidden rounded-[38px] border border-[var(--border)] bg-[linear-gradient(135deg,color-mix(in_srgb,#0f172a_6%,var(--surface-strong)),var(--surface-strong)_50%,color-mix(in_srgb,#2563eb_7%,var(--surface-strong)))] p-6 shadow-[0_35px_90px_-60px_rgba(15,23,42,0.28)] md:p-8 lg:grid-cols-[minmax(0,1.1fr)_360px] lg:gap-8">
+        <div className="space-y-6">
+          <span className="inline-flex rounded-full border border-[color:var(--ring)] bg-[color:color-mix(in_srgb,var(--primary)_12%,var(--surface-strong))] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary)]">
+            {messages.app.title}
+          </span>
+
+          <div>
+            <h1 className="text-4xl font-semibold tracking-tight text-[var(--foreground)] sm:text-5xl">
+              {messages.home.title}
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted-foreground)]">
+              {messages.home.description}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            {user ? (
+              <Link href="/dashboard" className="rounded-2xl bg-[var(--foreground)] px-5 py-3 text-sm font-semibold text-[var(--background)] transition hover:bg-[var(--primary)]">
+                {messages.sidebar.dashboard}
+              </Link>
+            ) : (
+              <>
+                <Link href="/auth/login" className="rounded-2xl bg-[var(--foreground)] px-5 py-3 text-sm font-semibold text-[var(--background)] transition hover:bg-[var(--primary)]">
+                  {messages.auth.loginAction}
+                </Link>
+                <Link href="/auth/register" className="rounded-2xl border border-[var(--border)] px-5 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]">
+                  {messages.auth.createAccount}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    loginAsDemo();
+                    router.push("/dashboard");
+                  }}
+                  className="rounded-2xl border border-[var(--border)] px-5 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]"
+                >
+                  {messages.auth.demoAccess}
+                </button>
+              </>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="mt-8 grid gap-3 lg:mt-0">
+          <article className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">{messages.auth.secure}</p>
+            <p className="mt-3 text-lg font-semibold text-[var(--foreground)]">{messages.auth.secureDescription}</p>
+          </article>
+          <article className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">{messages.auth.sync}</p>
+            <p className="mt-3 text-lg font-semibold text-[var(--foreground)]">{messages.auth.syncDescription}</p>
+          </article>
+          <article className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">{messages.auth.focus}</p>
+            <p className="mt-3 text-lg font-semibold text-[var(--foreground)]">{messages.auth.focusDescription}</p>
+          </article>
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
+
