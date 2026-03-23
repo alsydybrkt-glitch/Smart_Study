@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useId, useRef, useState } from "react";
+import { memo, type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { useI18n } from "@/hooks/useI18n";
 import { Priority } from "@/types/task";
 
@@ -15,7 +15,7 @@ interface Props {
 
 const priorityOptions: Priority[] = ["low", "medium", "high"];
 
-export default function AddTaskModal({ addTask }: Props) {
+function AddTaskModal({ addTask }: Props) {
   const { dir, messages } = useI18n();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -202,3 +202,5 @@ export default function AddTaskModal({ addTask }: Props) {
     </>
   );
 }
+
+export default memo(AddTaskModal);

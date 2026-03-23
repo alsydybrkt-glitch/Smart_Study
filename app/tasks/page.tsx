@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { useI18n } from "@/hooks/useI18n";
 import { useTasks } from "@/hooks/useTasks";
 import KanbanColumn from "@/components/tasks/KanbanColumn";
@@ -14,6 +14,7 @@ const priorityOrder: Record<Priority, number> = {
 };
 
 type SortOption = "newest" | "oldest" | "priority";
+const FILTERS: Array<Priority | "all"> = ["all", "high", "medium", "low"];
 
 function sortTasks(tasks: Task[], sortBy: SortOption) {
   return [...tasks].sort((a, b) => {
@@ -116,14 +117,27 @@ export default function TasksPage() {
     };
   }, [deferredSearch, messages.tasksPage.allTasks, messages.tasksPage.done, messages.tasksPage.inProgress, messages.tasksPage.toDo, priorityFilter, sortBy, tasks]);
 
-  const filters: Array<Priority | "all"> = ["all", "high", "medium", "low"];
+  const handleDragStart = useCallback((taskId: string) => {
+    setDraggedTaskId(taskId);
+  }, []);
 
-  const handleDropTask = (status: Task["status"]) => {
+  const handleDragEnd = useCallback(() => {
+    setDraggedTaskId(null);
+    setDropStatus(null);
+  }, []);
+
+  const handleDropTask = useCallback((status: Task["status"]) => {
     if (!draggedTaskId) return;
     moveTask(draggedTaskId, status);
     setDraggedTaskId(null);
     setDropStatus(null);
-  };
+  }, [draggedTaskId, moveTask]);
+
+  const columns = useMemo(() => [
+    { title: messages.tasksPage.toDo, status: "todo" as const, tasks: todo },
+    { title: messages.tasksPage.inProgress, status: "progress" as const, tasks: progress },
+    { title: messages.tasksPage.done, status: "done" as const, tasks: done },
+  ], [done, messages.tasksPage.done, messages.tasksPage.inProgress, messages.tasksPage.toDo, progress, todo]);
 
   return (
     <main className="mx-auto flex max-w-7xl flex-col gap-6 px-3 py-4 sm:px-4 md:gap-8 md:px-6 md:py-8 xl:px-8 xl:py-10">
@@ -194,7 +208,7 @@ export default function TasksPage() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {filters.map((filter) => (
+                {FILTERS.map((filter) => (
                   <button
                     key={filter}
                     type="button"
@@ -309,59 +323,21 @@ export default function TasksPage() {
       )}
 
       <section className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-        <KanbanColumn
-          title={messages.tasksPage.toDo}
-          status="todo"
-          tasks={todo}
-          moveTask={moveTask}
-          deleteTask={deleteTask}
-          onDragStart={(taskId) => {
-            setDraggedTaskId(taskId);
-          }}
-          onDragEnd={() => {
-            setDraggedTaskId(null);
-            setDropStatus(null);
-          }}
-          onDragOverColumn={setDropStatus}
-          onDropTask={handleDropTask}
-          isDropActive={draggedTaskId !== null && dropStatus === "todo"}
-        />
-
-        <KanbanColumn
-          title={messages.tasksPage.inProgress}
-          status="progress"
-          tasks={progress}
-          moveTask={moveTask}
-          deleteTask={deleteTask}
-          onDragStart={(taskId) => {
-            setDraggedTaskId(taskId);
-          }}
-          onDragEnd={() => {
-            setDraggedTaskId(null);
-            setDropStatus(null);
-          }}
-          onDragOverColumn={setDropStatus}
-          onDropTask={handleDropTask}
-          isDropActive={draggedTaskId !== null && dropStatus === "progress"}
-        />
-
-        <KanbanColumn
-          title={messages.tasksPage.done}
-          status="done"
-          tasks={done}
-          moveTask={moveTask}
-          deleteTask={deleteTask}
-          onDragStart={(taskId) => {
-            setDraggedTaskId(taskId);
-          }}
-          onDragEnd={() => {
-            setDraggedTaskId(null);
-            setDropStatus(null);
-          }}
-          onDragOverColumn={setDropStatus}
-          onDropTask={handleDropTask}
-          isDropActive={draggedTaskId !== null && dropStatus === "done"}
-        />
+        {columns.map((column) => (
+          <KanbanColumn
+            key={column.status}
+            title={column.title}
+            status={column.status}
+            tasks={column.tasks}
+            moveTask={moveTask}
+            deleteTask={deleteTask}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragOverColumn={setDropStatus}
+            onDropTask={handleDropTask}
+            isDropActive={draggedTaskId !== null && dropStatus === column.status}
+          />
+        ))}
       </section>
     </main>
   );

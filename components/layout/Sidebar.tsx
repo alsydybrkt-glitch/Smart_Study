@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, memo } from "react";
 import { useTheme } from "next-themes";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useI18n } from "@/hooks/useI18n";
 import {
   LayoutDashboard,
@@ -34,11 +33,11 @@ function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(getInitialDesktopState);
-  const shouldReduceMotion = useReducedMotion();
   const isDark = resolvedTheme === "dark";
   const themeLabel = isDark
     ? messages.sidebar.themeLight
     : messages.sidebar.themeDark;
+  const isMobileSidebarVisible = !isDesktop && mobileOpen;
 
   const links = [
     { href: "/dashboard", label: messages.sidebar.dashboard, icon: LayoutDashboard },
@@ -60,12 +59,24 @@ function Sidebar() {
     return () => mediaQuery.removeEventListener("change", onChange);
   }, []);
 
+  useEffect(() => {
+    if (!isMobileSidebarVisible) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileSidebarVisible]);
+
   return (
     <>
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className={`fixed top-3 z-50 rounded-xl border border-[var(--sidebar-border)] bg-[color:var(--surface-strong)] p-2 text-[var(--foreground)] shadow-lg backdrop-blur md:hidden ${
+        className={`fixed top-3 z-50 rounded-xl border border-[var(--sidebar-border)] bg-[color:var(--surface-strong)] p-2 text-[var(--foreground)] shadow-lg md:hidden ${
           dir === "rtl" ? "right-3" : "left-3"
         }`}
         aria-label={messages.sidebar.toggleSidebar}
@@ -75,43 +86,30 @@ function Sidebar() {
         <Menu size={22} />
       </button>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px] md:hidden"
-            onClick={() => setMobileOpen(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          />
-        )}
-      </AnimatePresence>
+      <div
+        className={`fixed inset-0 z-40 bg-black/45 transition-opacity duration-200 md:hidden ${
+          isMobileSidebarVisible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setMobileOpen(false)}
+        aria-hidden={!isMobileSidebarVisible}
+      />
 
-      <motion.aside
+      <aside
         id="app-sidebar"
-        layout={!shouldReduceMotion}
-        transition={shouldReduceMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 30 }}
-        animate={{
-          x: isDesktop
-            ? 0
-            : mobileOpen
-              ? 0
-              : dir === "rtl"
-                ? "100%"
-                : "-100%",
-        }}
         aria-label="Primary"
         className={`
   fixed md:relative z-50
   inset-y-0 md:inset-auto
-  h-screen md:h-auto
+  h-dvh md:h-auto
   bg-[linear-gradient(180deg,color-mix(in_srgb,var(--sidebar-bg)_94%,black),var(--sidebar-bg))]
   text-[var(--sidebar-text)]
   ${dir === "rtl" ? "right-0 border-l" : "left-0 border-r"} border-[var(--sidebar-border)]
   flex flex-col
   shadow-[0_24px_80px_-36px_rgba(2,6,23,0.7)] md:shadow-none
   overflow-y-auto md:overflow-visible
+  transform-gpu will-change-transform transition-transform duration-200 ease-out md:transition-[width] md:duration-200
 
+  ${isDesktop ? "translate-x-0" : mobileOpen ? "translate-x-0" : dir === "rtl" ? "translate-x-full" : "-translate-x-full"}
   ${collapsed ? "md:w-[78px]" : "md:w-[248px]"} w-[86vw] max-w-[300px]
   `}
       >
@@ -145,21 +143,18 @@ function Sidebar() {
                 </button>
               )}
 
-              <motion.button
+              <button
                 type="button"
                 onClick={() => setCollapsed(!collapsed)}
                 className="hidden rounded-lg p-1.5 transition hover:bg-[var(--sidebar-hover)] md:inline-flex"
                 aria-label={messages.sidebar.toggleSidebar}
-                whileTap={{ scale: 0.95 }}
               >
-                <motion.span
-                  animate={{ rotate: collapsed ? 180 : 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  className="flex"
+                <span
+                  className={`flex transition-transform duration-200 ${collapsed ? "rotate-180" : "rotate-0"}`}
                 >
                   <PanelLeft size={20} />
-                </motion.span>
-              </motion.button>
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -285,7 +280,7 @@ function Sidebar() {
             </button>
           </div>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }

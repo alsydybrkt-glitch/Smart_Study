@@ -2,7 +2,6 @@
 
 import { useI18n } from "@/hooks/useI18n";
 import { Task } from "@/types/task";
-import { motion, useReducedMotion } from "framer-motion";
 import { memo, useMemo, type DragEvent } from "react";
 
 interface Props {
@@ -24,7 +23,6 @@ const actionButton =
 
 function TaskCard({ task, moveTask, deleteTask, onDragStart, onDragEnd }: Props) {
   const { locale, messages } = useI18n();
-  const shouldReduceMotion = useReducedMotion();
 
   const formatter = useMemo(
     () =>
@@ -46,10 +44,7 @@ function TaskCard({ task, moveTask, deleteTask, onDragStart, onDragEnd }: Props)
   const dueLabel = task.dueDate ? formatter.format(new Date(task.dueDate)) : null;
 
   return (
-    <motion.article
-      layout={!shouldReduceMotion}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+    <article
       draggable
       onDragStartCapture={(event: DragEvent<HTMLElement>) => {
         event.dataTransfer.setData("text/task-id", task.id);
@@ -57,7 +52,7 @@ function TaskCard({ task, moveTask, deleteTask, onDragStart, onDragEnd }: Props)
         onDragStart?.(task.id);
       }}
       onDragEndCapture={onDragEnd}
-      className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-3.5 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-28px_rgba(79,70,229,0.35)] focus-within:ring-4 focus-within:ring-[var(--ring)] sm:p-4"
+      className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-3.5 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)] transition-transform transition-shadow duration-150 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-28px_rgba(79,70,229,0.35)] focus-within:ring-4 focus-within:ring-[var(--ring)] sm:p-4"
       aria-label={task.title}
     >
       <div className="flex items-start justify-between gap-3">
@@ -126,7 +121,7 @@ function TaskCard({ task, moveTask, deleteTask, onDragStart, onDragEnd }: Props)
           {messages.taskCard.delete}
         </button>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

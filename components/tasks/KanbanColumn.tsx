@@ -2,6 +2,7 @@
 
 import { Task } from "@/types/task";
 import { useI18n } from "@/hooks/useI18n";
+import { memo } from "react";
 import TaskCard from "./TaskCard";
 
 interface Props {
@@ -17,7 +18,25 @@ interface Props {
   isDropActive: boolean;
 }
 
-export default function KanbanColumn({
+const COLUMN_STYLES = {
+  todo: {
+    shell: "border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-strong),var(--todo-bg))]",
+    badge: "bg-[var(--foreground)] text-[var(--background)]",
+    dot: "bg-slate-500",
+  },
+  progress: {
+    shell: "border-amber-500/20 bg-[linear-gradient(180deg,var(--surface-strong),var(--progress-bg))]",
+    badge: "bg-amber-500 text-white",
+    dot: "bg-amber-500",
+  },
+  done: {
+    shell: "border-emerald-500/20 bg-[linear-gradient(180deg,var(--surface-strong),var(--done-bg))]",
+    badge: "bg-emerald-500 text-white",
+    dot: "bg-emerald-500",
+  },
+} as const;
+
+function KanbanColumn({
   title,
   status,
   tasks,
@@ -30,23 +49,7 @@ export default function KanbanColumn({
   isDropActive,
 }: Props) {
   const { messages } = useI18n();
-  const columnStyles = {
-    todo: {
-      shell: "border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-strong),var(--todo-bg))]",
-      badge: "bg-[var(--foreground)] text-[var(--background)]",
-      dot: "bg-slate-500",
-    },
-    progress: {
-      shell: "border-amber-500/20 bg-[linear-gradient(180deg,var(--surface-strong),var(--progress-bg))]",
-      badge: "bg-amber-500 text-white",
-      dot: "bg-amber-500",
-    },
-    done: {
-      shell: "border-emerald-500/20 bg-[linear-gradient(180deg,var(--surface-strong),var(--done-bg))]",
-      badge: "bg-emerald-500 text-white",
-      dot: "bg-emerald-500",
-    },
-  }[status];
+  const columnStyles = COLUMN_STYLES[status];
 
   return (
     <section
@@ -97,3 +100,5 @@ export default function KanbanColumn({
     </section>
   );
 }
+
+export default memo(KanbanColumn);
