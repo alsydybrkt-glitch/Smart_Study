@@ -4,30 +4,30 @@
 
 :root {
   /* background */
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --background-accent: rgba(99, 102, 241, 0.14);
-  --background-secondary: #eef2ff;
+  --background: #f7f8fc;
+  --foreground: #162033;
+  --background-accent: rgba(79, 70, 229, 0.08);
+  --background-secondary: #eef2f8;
 
   /* cards */
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --surface: rgba(255, 255, 255, 0.82);
-  --surface-strong: rgba(255, 255, 255, 0.96);
-  --surface-muted: rgba(241, 245, 249, 0.84);
-  --surface-elevated: rgba(248, 250, 252, 0.92);
+  --card-foreground: #162033;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-strong: rgba(255, 255, 255, 0.98);
+  --surface-muted: #f3f5f9;
+  --surface-elevated: #edf1f7;
 
   /* primary brand */
-  --primary: #6366f1;
+  --primary: #4f46e5;
   --primary-foreground: #ffffff;
 
   /* muted */
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #eef2f7;
+  --muted-foreground: #5f6b7d;
 
   /* border */
-  --border: #e2e8f0;
-  --ring: rgba(99, 102, 241, 0.16);
+  --border: #d8dfeb;
+  --ring: rgba(79, 70, 229, 0.14);
 
   /* sidebar */
   --sidebar-bg: #0f172a;
@@ -35,10 +35,10 @@
   --sidebar-hover: #1e293b;
   --sidebar-border: rgba(148, 163, 184, 0.16);
 
-  --todo-bg: #f3f4f6;
-  --progress-bg: #fff7ed;
-  --review-bg: #eff6ff;
-  --done-bg: #f0fdf4;
+  --todo-bg: #f5f6fa;
+  --progress-bg: #fff6ea;
+  --review-bg: #eef4ff;
+  --done-bg: #eefbf3;
 }
 
 /* ===== Dark Mode ===== */

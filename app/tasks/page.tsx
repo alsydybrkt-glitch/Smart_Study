@@ -96,22 +96,22 @@ export default function TasksPage() {
         {
           label: messages.tasksPage.allTasks,
           value: filtered.length,
-          tone: "from-slate-900 to-slate-700 text-white",
+          tone: "from-slate-800 to-slate-700 text-white",
         },
         {
           label: messages.tasksPage.toDo,
           value: columns.todo.length,
-          tone: "from-slate-100 to-slate-200 text-slate-700",
+          tone: "from-slate-50 to-slate-100 text-slate-700",
         },
         {
           label: messages.tasksPage.inProgress,
           value: columns.progress.length,
-          tone: "from-amber-100 to-orange-100 text-amber-800",
+          tone: "from-amber-50 to-orange-50 text-amber-900",
         },
         {
           label: messages.tasksPage.done,
           value: columns.done.length,
-          tone: "from-emerald-100 to-green-100 text-emerald-800",
+          tone: "from-emerald-50 to-green-50 text-emerald-900",
         },
       ],
     };
@@ -250,7 +250,7 @@ export default function TasksPage() {
                 <button
                   type="button"
                   onClick={clearCompleted}
-                  className="rounded-2xl bg-rose-500/12 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-500/18 dark:text-rose-300"
+                  className="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-0 dark:bg-rose-500/12 dark:text-rose-300"
                 >
                   {messages.tasksPage.clearCompleted}
                 </button>
@@ -258,7 +258,7 @@ export default function TasksPage() {
             </div>
           </section>
 
-          <section className="rounded-[24px] border border-[color:var(--ring)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--primary)_12%,var(--surface-strong)),var(--surface-strong))] p-4">
+          <section className="rounded-[24px] border border-[color:var(--ring)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--primary)_8%,white),var(--surface-strong))] p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-[var(--foreground)]">{messages.tasksPage.progressOverview}</p>
@@ -286,10 +286,10 @@ export default function TasksPage() {
       </section>
 
       {focusTasks.length > 0 && (
-        <section className="rounded-[28px] border border-rose-500/15 bg-[linear-gradient(180deg,color-mix(in_srgb,#fb7185_10%,var(--surface-strong)),var(--surface-strong))] p-5 shadow-[0_20px_60px_-42px_rgba(225,29,72,0.28)]">
+        <section className="rounded-[28px] border border-rose-100 bg-[linear-gradient(180deg,color-mix(in_srgb,#fb7185_6%,white),var(--surface-strong))] p-5 shadow-[0_20px_60px_-42px_rgba(225,29,72,0.18)] dark:border-rose-500/15 dark:bg-[linear-gradient(180deg,color-mix(in_srgb,#fb7185_10%,var(--surface-strong)),var(--surface-strong))] dark:shadow-[0_20px_60px_-42px_rgba(225,29,72,0.28)]">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-rose-600">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-rose-700 dark:text-rose-600">
                 {messages.tasksPage.focusZone}
               </p>
               <h2 className="mt-1 text-2xl font-semibold tracking-tight text-[var(--foreground)]">
@@ -308,7 +308,7 @@ export default function TasksPage() {
                 className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-4 shadow-sm"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                  <span className="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-800 ring-1 ring-rose-100 dark:bg-rose-100 dark:text-rose-700 dark:ring-0">
                     {task.status === "progress" ? messages.tasksPage.inProgress : task.status === "done" ? messages.tasksPage.done : messages.tasksPage.toDo}
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
