@@ -87,7 +87,7 @@ function Sidebar() {
       </button>
 
       <div
-        className={`fixed inset-0 z-40 bg-black/45 transition-opacity duration-200 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/45 transition-opacity duration-150 md:hidden ${
           isMobileSidebarVisible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={() => setMobileOpen(false)}
@@ -107,7 +107,7 @@ function Sidebar() {
   flex flex-col
   shadow-[0_24px_80px_-36px_rgba(2,6,23,0.7)] md:shadow-none
   overflow-y-auto md:overflow-visible
-  transform-gpu will-change-transform transition-transform duration-200 ease-out md:transition-[width] md:duration-200
+  transform-gpu transition-transform duration-150 ease-linear md:transition-[width] md:duration-150
 
   ${isDesktop ? "translate-x-0" : mobileOpen ? "translate-x-0" : dir === "rtl" ? "translate-x-full" : "-translate-x-full"}
   ${collapsed ? "md:w-[78px]" : "md:w-[248px]"} w-[86vw] max-w-[300px]
@@ -150,7 +150,7 @@ function Sidebar() {
                 aria-label={messages.sidebar.toggleSidebar}
               >
                 <span
-                  className={`flex transition-transform duration-200 ${collapsed ? "rotate-180" : "rotate-0"}`}
+                  className="flex"
                 >
                   <PanelLeft size={20} />
                 </span>
